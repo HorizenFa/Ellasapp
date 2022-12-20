@@ -1,0 +1,169 @@
+<html>
+<head>
+  <title>Budget Tracker</title>
+</head>
+<body>
+  <h1>Budget Tracker</h1>
+
+  <div id="budget-display">
+    <p>Income: <span id="income-display">0</span></p>
+    <p>Expenses: <span id="expenses-display">0</span></p>
+    <p>Budget Remaining: <span id="budget-remaining-display">0</span></p>
+    <p>Budget Target: <span id="budget-target-display">0</span></p>
+  </div>
+
+  <form id="budget-form">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount" value="0">
+    <br>
+    <label for="type">Type:</label>
+    <select id="type" name="type">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+    <br>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description">
+    <br>
+    <button type="submit">Add</button>
+  </form>
+
+  <form id="target-form">
+    <label for="target">Budget Target:</label>
+    <input type="number" id="target" name="target" value="0">
+    <br>
+    <button type="submit">Set Target</button>
+  </form>
+
+  <table id="transactions-table">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="transactions-table-body"></tbody>
+  </table>
+
+  <style>
+    #budget-display {
+      font-size: larger;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #budget-form, #target-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    #budget-form input[type="number"], #target-form input[type="number"] {
+      width: 100px;
+      margin-bottom: 10px;
+      font-size: 18px;
+      padding: 5px;
+    }
+    #budget-form select {
+      width: 150px;
+      margin-bottom: 10px;
+      font
+      size: 18px;
+      padding: 5px;
+    }
+    #budget-form input[type="text"] {
+      width: 250px;
+      margin-bottom: 10px;
+      font-size: 18px;
+      padding: 5px;
+    }
+    #budget-form button, #target-form button {
+      font-size: 18px;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    #budget-form button:hover, #target-form button:hover {
+      background-color: #666;
+    }
+    #transactions-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #transactions-table th, #transactions-table td {
+      border: 1px solid #333;
+      padding: 5px;
+      text-align: left;
+    }
+  </style>
+
+  <script>
+    const budgetForm = document.getElementById('budget-form');
+    const targetForm = document.getElementById('target-form');
+    const budgetDisplay = document.getElementById('budget-display');
+    const incomeDisplay = document.getElementById('income-display');
+    const expensesDisplay = document.getElementById('expenses-display');
+    const budgetRemainingDisplay = document.getElementById('budget-remaining-display');
+    const budgetTargetDisplay = document.getElementById('budget-target-display');
+    const transactionsTableBody = document.getElementById('transactions-table-body');
+
+    let income = 0;
+    let expenses = 0;
+    let budgetRemaining = 0;
+    let budgetTarget = 0;
+   
+    let transactions = [];
+
+    budgetForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const amount = budgetForm['amount'].value;
+      const type = budgetForm['type'].value;
+      const description = budgetForm['description'].value;
+
+      if (type === 'income') {
+        income += parseInt(amount);
+      } else {
+        expenses += parseInt(amount);
+      }
+
+      budgetRemaining = income - expenses;
+
+      transactions.push({
+        type: type,
+        amount: amount,
+        description: description
+      });
+
+      transactionsTableBody.innerHTML = '';
+      for (const transaction of transactions) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${transaction.type}</td>
+          <td>${transaction.amount}</td>
+          <td>${transaction.description}</td>
+        `;
+        transactionsTableBody.appendChild(row);
+      }
+
+      incomeDisplay.innerHTML = income;
+      expensesDisplay.innerHTML = expenses;
+      budgetRemainingDisplay.innerHTML = budgetRemaining;
+      budgetTargetDisplay.innerHTML = budgetTarget;
+    });
+
+    targetForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      budgetTarget = targetForm['target'].value;
+
+      budgetTargetDisplay.innerHTML = budgetTarget;
+    });
+  </script>
+</body>
+</html>
+
